@@ -3,6 +3,13 @@ import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 
+const Logo = ({ className = "h-7" }) => (
+    <svg className={className} viewBox="0 0 240 40" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 18L34 4L22 34L18 20L3 18Z" fill="currentColor" />
+        <text x="46" y="29" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="800" fontSize="26" letterSpacing="-0.5" fill="currentColor">LinkPilot</text>
+    </svg>
+)
+
 const Navbar = () => {
     const pathname = usePathname();
     const router = useRouter();
@@ -94,13 +101,6 @@ const Navbar = () => {
 
     if (!showpath) return null;
 
-    const Logo = ({ className = "h-7" }) => (
-        <svg className={className} viewBox="0 0 240 40" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 18L34 4L22 34L18 20L3 18Z" fill="currentColor" />
-            <text x="46" y="29" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="800" fontSize="26" letterSpacing="-0.5" fill="currentColor">LinkPilot</text>
-        </svg>
-    );
-
     return (
         <>
             {/* ── DESKTOP NAVBAR (Pill) ── */}
@@ -168,7 +168,7 @@ const Navbar = () => {
             </nav>
 
             {/* ── MOBILE NAVBAR ── */}
-            <nav className='md:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 px-4 h-14 flex justify-between items-center'>
+            <nav className='md:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 px-3 sm:px-4 h-14 flex justify-between items-center'>
                 {mobileSearchOpen ? (
                     // Full-width search header mode on mobile
                     <div ref={mobileSearchRef} className="flex items-center w-full gap-2">
@@ -201,36 +201,37 @@ const Navbar = () => {
                 ) : (
                     // Standard header mode on mobile
                     <>
-                        <Link href="/" className="flex items-center">
-                            <Logo className="h-6" />
+                        <Link href="/" className="flex shrink-0 items-center">
+                            <Logo className="h-auto w-[120px] max-[360px]:w-[96px]" />
                         </Link>
 
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex shrink-0 items-center gap-1">
                             {/* Prominent Search Button on Mobile */}
                             <button
                                 onClick={() => { setMobileSearchOpen(true); setMobileMenuOpen(false); }}
-                                className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-xs font-semibold transition"
+                                className="flex shrink-0 items-center gap-1.5 px-2.5 min-[380px]:px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-xs font-semibold transition"
                                 aria-label="Search profiles"
                             >
                                 <svg className="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
-                                <span>Search</span>
+                                <span className="hidden min-[380px]:inline">Search</span>
                             </button>
 
                             {/* Create Yours button on Mobile Header (if not on /generate) */}
                             {pathname !== '/generate' && (
-                                <Link href="/generate">
-                                    <button className="bg-gray-900 text-white px-3 py-1.5 rounded-full text-xs font-semibold transition">
-                                        Create →
-                                    </button>
+                                <Link
+                                    href="/generate"
+                                    className="inline-flex shrink-0 items-center whitespace-nowrap bg-gray-900 text-white px-3 py-1.5 rounded-full text-xs font-semibold leading-none transition"
+                                >
+                                    Create
                                 </Link>
                             )}
 
                             {/* Hamburger Menu Toggle */}
                             <button
                                 onClick={() => { setMobileMenuOpen(!mobileMenuOpen); setMobileSearchOpen(false); }}
-                                className="p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition"
+                                className="shrink-0 p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition"
                                 aria-label="Toggle menu"
                             >
                                 {mobileMenuOpen ? (
