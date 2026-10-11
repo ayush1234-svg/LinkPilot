@@ -34,40 +34,40 @@ function GenerateForm() {
   const [loadingExisting, setLoadingExisting] = useState(false)
   const fileInputRef = useRef(null)
 
-  // Fetch existing user profile & handle auto-suggest logic
+  // Instantly auto-fill handle with email prefix & fetch existing profile
   useEffect(() => {
     if (session?.user?.email) {
+      const emailPrefix = session.user.email.split('@')[0].toLowerCase().replace(/[^a-z0-9_-]/g, '')
+      const queryHandle = searchParams.get('handle')
+
+      // 1. Immediately set handle to email prefix without waiting for API response
+      setHandle(prev => queryHandle || prev || emailPrefix)
+
+      // 2. Immediately suggest Google profile picture if empty
+      if (session.user?.image) {
+        setPic(prev => prev || session.user.image)
+        setPreviewUrl(prev => prev || session.user.image)
+      }
+
+      // 3. In background, fetch existing profile if user already created one
       setLoadingExisting(true)
       fetch("/api/add")
         .then((res) => res.json())
         .then((data) => {
-          const queryHandle = searchParams.get('handle')
-          const emailPrefix = session.user.email.split('@')[0].toLowerCase().replace(/[^a-z0-9_-]/g, '')
-
           if (data.success && data.profile) {
             setIsEditing(true)
-            // Priority: Query param > Saved Profile Handle > Email Prefix
-            setHandle(queryHandle || data.profile.Handle || emailPrefix)
-            setDescription(data.profile.Description || "")
+            if (data.profile.Handle) {
+              setHandle(queryHandle || data.profile.Handle)
+            }
+            if (data.profile.Description) {
+              setDescription(data.profile.Description)
+            }
             if (data.profile.Links && data.profile.Links.length > 0) {
               setLinks(data.profile.Links)
             }
             if (data.profile.Picture) {
               setPic(data.profile.Picture)
               setPreviewUrl(data.profile.Picture)
-            }
-          } else {
-            // New user without a saved profile:
-            // Auto-suggest handle from query param or email prefix
-            if (queryHandle) {
-              setHandle(queryHandle)
-            } else if (emailPrefix && !handle) {
-              setHandle(emailPrefix)
-            }
-            // Auto-fill Google avatar if available
-            if (session.user?.image && !pic && !previewUrl) {
-              setPic(session.user.image)
-              setPreviewUrl(session.user.image)
             }
           }
         })
