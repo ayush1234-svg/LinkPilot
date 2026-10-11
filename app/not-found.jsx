@@ -11,7 +11,7 @@ export default function NotFound() {
           Profile Not Found
         </h1>
         <p className="text-yellow-100 text-sm mt-3 leading-relaxed">
-          The handle you are looking for doesn't exist or hasn't been claimed yet.
+          The handle you are looking for doesn&apos;t exist or hasn&apos;t been claimed yet.
         </p>
 
         <div className="flex flex-col gap-3 w-full mt-6">
